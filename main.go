@@ -14,7 +14,7 @@ type Album struct {
 	ID     int64
 	Title  string
 	Artist string
-	Price  float32
+	Price  float64
 }
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	for _, album := range albums {
-		fmt.Printf("ID: %d, Title: %s, Artist: %s, Price: %f\n", album.ID, album.Title, album.Artist, album.Price)
+		fmt.Printf("ID: %d, Title: %s, Artist: %s, Price: %.2f\n", album.ID, album.Title, album.Artist, album.Price)
 	}
 }
 
@@ -64,6 +64,5 @@ func albumsByArtists(name string, conn *pgx.Conn) ([]Album, error) {
 		return nil, fmt.Errorf("albumByArtist %q: %v", name, err)
 	}
 
-	fmt.Println(albums)
 	return albums, nil
 }
