@@ -1,18 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 )
 
 type Album struct {
-    ID     int64
-    Title  string
-    Artist string
-    Price  float32
+	ID     int64
+	Title  string
+	Artist string
+	Price  float32
 }
 
 func main() {
@@ -23,7 +25,16 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 
-	albums, err := albumsByArtists("Gerry Mulligan", conn)
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter artist's name to search for albums: ")
+	artistName, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+	artistName = strings.TrimSpace(artistName)
+
+	albums, err := albumsByArtists(artistName, conn)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to get albums: %v\n", err)
 		return
@@ -53,5 +64,6 @@ func albumsByArtists(name string, conn *pgx.Conn) ([]Album, error) {
 		return nil, fmt.Errorf("albumByArtist %q: %v", name, err)
 	}
 
+	fmt.Println(albums)
 	return albums, nil
 }
